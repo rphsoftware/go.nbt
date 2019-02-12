@@ -126,7 +126,7 @@ func TestErrMissingField(t *testing.T) {
 	err = Unmarshal(Uncompressed, f, &list)
 	if err == nil {
 		t.Error("No error, but one was expected!")
-	} else if err.Error() != "nbt: Unhandled TAG_List (0x09)\n\t\tat struct field \"servers\"" {
+	} else if err.Error() != "nbt: Unhandled tagList (0x09)\n\t\tat struct field \"servers\"" {
 		t.Error(err)
 	}
 }
@@ -152,7 +152,7 @@ func TestErrWrongType(t *testing.T) {
 	err = Unmarshal(Uncompressed, f, &list)
 	if err == nil {
 		t.Error("No error, but one was expected!")
-	} else if err.Error() != "nbt: Tag is TAG_String (0x08), but I don't know how to put that in a float64!\n\t\tat struct field \"ip\"\n\t\tat list index 0\n\t\tat struct field \"servers\"" {
+	} else if err.Error() != "nbt: Tag is tagString (0x08), but I don't know how to put that in a float64!\n\t\tat struct field \"ip\"\n\t\tat list index 0\n\t\tat struct field \"servers\"" {
 		t.Error(err)
 	}
 }

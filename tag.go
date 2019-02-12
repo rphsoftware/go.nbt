@@ -7,49 +7,49 @@ import "fmt"
 type Tag byte
 
 const (
-	TAG_End        Tag = 0  // No payload, no name.
-	TAG_Byte       Tag = 1  // Signed 8 bit integer.
-	TAG_Short      Tag = 2  // Signed 16 bit integer.
-	TAG_Int        Tag = 3  // Signed 32 bit integer.
-	TAG_Long       Tag = 4  // Signed 64 bit integer.
-	TAG_Float      Tag = 5  // IEEE 754-2008 32 bit floating point number.
-	TAG_Double     Tag = 6  // IEEE 754-2008 64 bit floating point number.
-	TAG_Byte_Array Tag = 7  // size TAG_Int, then payload [size]byte.
-	TAG_String     Tag = 8  // length TAG_Short, then payload (utf-8) string (of length length).
-	TAG_List       Tag = 9  // tagID TAG_Byte, length TAG_Int, then payload [length]tagID.
-	TAG_Compound   Tag = 10 // { tagID TAG_Byte, name TAG_String, payload tagID }... TAG_End
-	TAG_Int_Array  Tag = 11 // size TAG_Int, then payload [size]TAG_Int
-	TAG_Long_Array Tag = 12
+	tagEnd       Tag = iota // No payload, no name.
+	tagByte                 // Signed 8 bit integer.
+	tagShort                // Signed 16 bit integer.
+	tagInt                  // Signed 32 bit integer.
+	tagLong                 // Signed 64 bit integer.
+	tagFloat                // IEEE 754-2008 32 bit floating point number.
+	tagDouble               // IEEE 754-2008 64 bit floating point number.
+	tagByteArray            // size tagInt, then payload [size]byte.
+	tagString               // length tagShort, then payload (utf-8) string (of length length).
+	tagList                 // tagID tagByte, length tagInt, then payload [length]tagID.
+	tagCompound             // { tagID tagByte, name tagString, payload tagID }... tagEnd
+	tagIntArray             // size tagInt, then payload [size]tagInt
+	tagLongArray
 )
 
 func (tag Tag) String() string {
 	name := "Unknown"
 	switch tag {
-	case TAG_End:
+	case tagEnd:
 		name = "TAG_End"
-	case TAG_Byte:
+	case tagByte:
 		name = "TAG_Byte"
-	case TAG_Short:
+	case tagShort:
 		name = "TAG_Short"
-	case TAG_Int:
+	case tagInt:
 		name = "TAG_Int"
-	case TAG_Long:
+	case tagLong:
 		name = "TAG_Long"
-	case TAG_Float:
+	case tagFloat:
 		name = "TAG_Float"
-	case TAG_Double:
+	case tagDouble:
 		name = "TAG_Double"
-	case TAG_Byte_Array:
+	case tagByteArray:
 		name = "TAG_Byte_Array"
-	case TAG_String:
+	case tagString:
 		name = "TAG_String"
-	case TAG_List:
+	case tagList:
 		name = "TAG_List"
-	case TAG_Compound:
+	case tagCompound:
 		name = "TAG_Compound"
-	case TAG_Int_Array:
+	case tagIntArray:
 		name = "TAG_Int_Array"
-	case TAG_Long_Array:
+	case tagLongArray:
 		name = "TAG_Long_Array"
 	}
 	return fmt.Sprintf("%s (0x%02x)", name, byte(tag))
@@ -58,7 +58,7 @@ func (tag Tag) String() string {
 type Compression byte
 
 const (
-	Uncompressed Compression = 0
-	GZip         Compression = 1
-	ZLib         Compression = 2
+	Uncompressed Compression = iota
+	GZip
+	ZLib
 )

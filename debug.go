@@ -51,7 +51,7 @@ func (d *debugState) printf(indent int, format string, args ...interface{}) {
 
 func (d *debugState) debug(indent int) bool {
 	name, tag := d.readTag()
-	if tag == TAG_End {
+	if tag == tagEnd {
 		d.printf(indent, "%s", tag)
 		return false
 	}
@@ -72,7 +72,7 @@ func (d *debugState) readTag() (string, Tag) {
 	var tag Tag
 	d.r(&tag)
 
-	if tag == TAG_End {
+	if tag == tagEnd {
 		return "", tag
 	}
 
@@ -96,37 +96,37 @@ func (d *debugState) readString() string {
 
 func (d *debugState) debugValue(indent int, tag Tag) {
 	switch tag {
-	case TAG_Byte:
+	case tagByte:
 		var value uint8
 		d.r(&value)
 		d.printf(indent, "0x%02x", value)
 
-	case TAG_Short:
+	case tagShort:
 		var value uint16
 		d.r(&value)
 		d.printf(indent, "0x%04x", value)
 
-	case TAG_Int:
+	case tagInt:
 		var value uint32
 		d.r(&value)
 		d.printf(indent, "0x%08x", value)
 
-	case TAG_Long:
+	case tagLong:
 		var value uint64
 		d.r(&value)
 		d.printf(indent, "0x%016x", value)
 
-	case TAG_Float:
+	case tagFloat:
 		var value float32
 		d.r(&value)
 		d.printf(indent, "%#v", value)
 
-	case TAG_Double:
+	case tagDouble:
 		var value float64
 		d.r(&value)
 		d.printf(indent, "%#v", value)
 
-	case TAG_Byte_Array:
+	case tagByteArray:
 		var length uint32
 		d.r(&length)
 		value := make([]byte, length)
@@ -134,12 +134,12 @@ func (d *debugState) debugValue(indent int, tag Tag) {
 		d.in.Read(value)
 		d.printf(indent, "Value: %#v", value)
 
-	case TAG_String:
+	case tagString:
 		value := d.readString()
 		d.printf(indent, "Length: %d", len(value))
 		d.printf(indent, "Value: %s", value)
 
-	case TAG_List:
+	case tagList:
 		var inner Tag
 		d.r(&inner)
 		var length uint32
@@ -155,29 +155,29 @@ func (d *debugState) debugValue(indent int, tag Tag) {
 
 		d.printf(indent, "}")
 
-	case TAG_Compound:
+	case tagCompound:
 		d.printf(indent, "Values: {")
 		for d.debug(indent + 1) {
 		}
 		d.printf(indent, "}")
 
-	case TAG_Int_Array:
+	case tagIntArray:
 		var length uint32
 		d.r(&length)
 		d.printf(indent, "Length: %d", length)
 		d.printf(indent, "Values: {")
 		for i := uint32(0); i < length; i++ {
-			d.debugValue(indent+1, TAG_Int)
+			d.debugValue(indent+1, tagInt)
 		}
 		d.printf(indent, "}")
 
-	case TAG_Long_Array:
+	case tagLongArray:
 		var length uint32
 		d.r(&length)
 		d.printf(indent, "Length: %d", length)
 		d.printf(indent, "Values: {")
 		for i := uint32(0); i < length; i++ {
-			d.debugValue(indent+1, TAG_Long)
+			d.debugValue(indent+1, tagLong)
 		}
 		d.printf(indent, "}")
 

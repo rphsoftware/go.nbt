@@ -37,10 +37,10 @@ type Example1 struct {
 	                         // your field name is invalid as an identifier in Go, you can
 	                         // use tags similar to encoding/json and encoding/xml.
 
-	Data [256]byte // go.nbt supports both arrays and slices for TAG_Byte_Array and TAG_Int_Array.
+	Data [256]byte // go.nbt supports both arrays and slices for tagByteArray and tagIntArray.
 
-	Children []Example1 // Any type that can be used as a TAG_Compound can also be used as an element
-	                    // in a TAG_List.
+	Children []Example1 // Any type that can be used as a tagCompound can also be used as an element
+	                    // in a tagList.
 }
 
 func ReadExample1(in io.Reader) (Example1, error) {
@@ -62,7 +62,7 @@ error message. For example, what if the elements of `Example1.Children` have an 
 Here's the error that would be returned:
 
 ```
-nbt: Unhandled TAG_Int (0x03)
+nbt: Unhandled tagInt (0x03)
 		at struct field "Index"
 		at list index 0
 		at struct field "Children"

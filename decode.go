@@ -71,7 +71,7 @@ func (d *decodeState) readTag() (string, Tag) {
 	var tag Tag
 	d.r(&tag)
 
-	if tag == TAG_End {
+	if tag == tagEnd {
 		return "", tag
 	}
 
@@ -82,29 +82,29 @@ func (d *decodeState) readTag() (string, Tag) {
 
 func (d *decodeState) allocate(tag Tag) reflect.Value {
 	switch tag {
-	case TAG_Byte:
+	case tagByte:
 		return reflect.ValueOf(new(int8)).Elem()
-	case TAG_Short:
+	case tagShort:
 		return reflect.ValueOf(new(int16)).Elem()
-	case TAG_Int:
+	case tagInt:
 		return reflect.ValueOf(new(int32)).Elem()
-	case TAG_Long:
+	case tagLong:
 		return reflect.ValueOf(new(int64)).Elem()
-	case TAG_Float:
+	case tagFloat:
 		return reflect.ValueOf(new(float32)).Elem()
-	case TAG_Double:
+	case tagDouble:
 		return reflect.ValueOf(new(float64)).Elem()
-	case TAG_Byte_Array:
+	case tagByteArray:
 		return reflect.ValueOf(new([]byte)).Elem()
-	case TAG_String:
+	case tagString:
 		return reflect.ValueOf(new(string)).Elem()
-	case TAG_List:
+	case tagList:
 		return reflect.ValueOf(new([]interface{})).Elem()
-	case TAG_Compound:
+	case tagCompound:
 		return reflect.ValueOf(new(map[string]interface{})).Elem()
-	case TAG_Int_Array:
+	case tagIntArray:
 		return reflect.ValueOf(new([]int32)).Elem()
-	case TAG_Long_Array:
+	case tagLongArray:
 		return reflect.ValueOf(new([]int64)).Elem()
 	}
 	panic(fmt.Errorf("nbt: Unhandled tag %s", tag))
@@ -136,7 +136,7 @@ func (d *decodeState) readValue(tag Tag, v reflect.Value) {
 	}
 
 	switch tag {
-	case TAG_Byte:
+	case tagByte:
 		var value uint8
 		d.r(&value)
 		switch v.Kind() {
@@ -150,7 +150,7 @@ func (d *decodeState) readValue(tag Tag, v reflect.Value) {
 			panic(fmt.Errorf("nbt: Tag is %s, but I don't know how to put that in a %s!", tag, v.Kind()))
 		}
 
-	case TAG_Short:
+	case tagShort:
 		var value uint16
 		d.r(&value)
 		switch v.Kind() {
@@ -162,7 +162,7 @@ func (d *decodeState) readValue(tag Tag, v reflect.Value) {
 			panic(fmt.Errorf("nbt: Tag is %s, but I don't know how to put that in a %s!", tag, v.Kind()))
 		}
 
-	case TAG_Int:
+	case tagInt:
 		var value uint32
 		d.r(&value)
 		switch v.Kind() {
@@ -174,7 +174,7 @@ func (d *decodeState) readValue(tag Tag, v reflect.Value) {
 			panic(fmt.Errorf("nbt: Tag is %s, but I don't know how to put that in a %s!", tag, v.Kind()))
 		}
 
-	case TAG_Long:
+	case tagLong:
 		var value uint64
 		d.r(&value)
 		switch v.Kind() {
@@ -186,7 +186,7 @@ func (d *decodeState) readValue(tag Tag, v reflect.Value) {
 			panic(fmt.Errorf("nbt: Tag is %s, but I don't know how to put that in a %s!", tag, v.Kind()))
 		}
 
-	case TAG_Float:
+	case tagFloat:
 		var value float32
 		d.r(&value)
 		switch v.Kind() {
@@ -196,7 +196,7 @@ func (d *decodeState) readValue(tag Tag, v reflect.Value) {
 			panic(fmt.Errorf("nbt: Tag is %s, but I don't know how to put that in a %s!", tag, v.Kind()))
 		}
 
-	case TAG_Double:
+	case tagDouble:
 		var value float64
 		d.r(&value)
 		switch v.Kind() {
@@ -206,7 +206,7 @@ func (d *decodeState) readValue(tag Tag, v reflect.Value) {
 			panic(fmt.Errorf("nbt: Tag is %s, but I don't know how to put that in a %s!", tag, v.Kind()))
 		}
 
-	case TAG_Byte_Array:
+	case tagByteArray:
 		var length uint32
 		d.r(&length)
 
@@ -224,14 +224,14 @@ func (d *decodeState) readValue(tag Tag, v reflect.Value) {
 
 			for i := 0; i < int(length); i++ {
 				value := v.Index(i)
-				d.readValue(TAG_Byte, value)
+				d.readValue(tagByte, value)
 			}
 
 		default:
 			panic(fmt.Errorf("nbt: Tag is %s, but I don't know how to put that in a %s!", tag, v.Kind()))
 		}
 
-	case TAG_String:
+	case tagString:
 		switch v.Kind() {
 		case reflect.String:
 			v.SetString(d.readString())
@@ -239,7 +239,7 @@ func (d *decodeState) readValue(tag Tag, v reflect.Value) {
 			panic(fmt.Errorf("nbt: Tag is %s, but I don't know how to put that in a %s!", tag, v.Kind()))
 		}
 
-	case TAG_List:
+	case tagList:
 		var inner Tag
 		d.r(&inner)
 		var length uint32
@@ -281,7 +281,7 @@ func (d *decodeState) readValue(tag Tag, v reflect.Value) {
 			panic(fmt.Errorf("nbt: Tag is %s, but I don't know how to put that in a %s!", tag, v.Kind()))
 		}
 
-	case TAG_Compound:
+	case tagCompound:
 		switch v.Kind() {
 		case reflect.Struct:
 			fields := parseStruct(v)
@@ -296,7 +296,7 @@ func (d *decodeState) readValue(tag Tag, v reflect.Value) {
 			for {
 				var tag Tag
 				name, tag = d.readTag()
-				if tag == TAG_End {
+				if tag == tagEnd {
 					break
 				}
 				if field, ok := fields[name]; ok {
@@ -321,7 +321,7 @@ func (d *decodeState) readValue(tag Tag, v reflect.Value) {
 			for {
 				var tag Tag
 				name, tag = d.readTag()
-				if tag == TAG_End {
+				if tag == tagEnd {
 					break
 				}
 				val := d.allocate(tag)
@@ -333,7 +333,7 @@ func (d *decodeState) readValue(tag Tag, v reflect.Value) {
 			panic(fmt.Errorf("nbt: Tag is %s, but I don't know how to put that in a %s!", tag, v.Kind()))
 		}
 
-	case TAG_Int_Array:
+	case tagIntArray:
 		var length uint32
 		d.r(&length)
 
@@ -351,13 +351,13 @@ func (d *decodeState) readValue(tag Tag, v reflect.Value) {
 
 			for i := 0; i < int(length); i++ {
 				value := v.Index(i)
-				d.readValue(TAG_Int, value)
+				d.readValue(tagInt, value)
 			}
 
 		default:
 			panic(fmt.Errorf("nbt: Tag is %s, but I don't know how to put that in a %s!", tag, v.Kind()))
 		}
-	case TAG_Long_Array:
+	case tagLongArray:
 		var length uint32
 		d.r(&length)
 
@@ -375,7 +375,7 @@ func (d *decodeState) readValue(tag Tag, v reflect.Value) {
 
 			for i := 0; i < int(length); i++ {
 				value := v.Index(i)
-				d.readValue(TAG_Long, value)
+				d.readValue(tagLong, value)
 			}
 
 		default:

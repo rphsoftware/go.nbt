@@ -67,88 +67,88 @@ func writeTag(out io.Writer, name string, v reflect.Value) {
 	}
 	switch v.Kind() {
 	case reflect.Bool:
-		w(out, TAG_Byte)
-		writeValue(out, TAG_String, name)
+		w(out, tagByte)
+		writeValue(out, tagString, name)
 		if v.Bool() {
-			writeValue(out, TAG_Byte, byte(1))
+			writeValue(out, tagByte, byte(1))
 		} else {
-			writeValue(out, TAG_Byte, byte(0))
+			writeValue(out, tagByte, byte(0))
 		}
 
 	case reflect.Int8:
-		w(out, TAG_Byte)
-		writeValue(out, TAG_String, name)
-		writeValue(out, TAG_Byte, int8(v.Int()))
+		w(out, tagByte)
+		writeValue(out, tagString, name)
+		writeValue(out, tagByte, int8(v.Int()))
 
 	case reflect.Uint8:
-		w(out, TAG_Byte)
-		writeValue(out, TAG_String, name)
-		writeValue(out, TAG_Byte, uint8(v.Uint()))
+		w(out, tagByte)
+		writeValue(out, tagString, name)
+		writeValue(out, tagByte, uint8(v.Uint()))
 
 	case reflect.Int16:
-		w(out, TAG_Short)
-		writeValue(out, TAG_String, name)
-		writeValue(out, TAG_Short, int16(v.Int()))
+		w(out, tagShort)
+		writeValue(out, tagString, name)
+		writeValue(out, tagShort, int16(v.Int()))
 
 	case reflect.Uint16:
-		w(out, TAG_Short)
-		writeValue(out, TAG_String, name)
-		writeValue(out, TAG_Short, uint16(v.Uint()))
+		w(out, tagShort)
+		writeValue(out, tagString, name)
+		writeValue(out, tagShort, uint16(v.Uint()))
 
 	case reflect.Int32:
-		w(out, TAG_Int)
-		writeValue(out, TAG_String, name)
-		writeValue(out, TAG_Int, int32(v.Int()))
+		w(out, tagInt)
+		writeValue(out, tagString, name)
+		writeValue(out, tagInt, int32(v.Int()))
 
 	case reflect.Uint32:
-		w(out, TAG_Int)
-		writeValue(out, TAG_String, name)
-		writeValue(out, TAG_Int, uint32(v.Uint()))
+		w(out, tagInt)
+		writeValue(out, tagString, name)
+		writeValue(out, tagInt, uint32(v.Uint()))
 
 	case reflect.Int64:
-		w(out, TAG_Long)
-		writeValue(out, TAG_String, name)
-		writeValue(out, TAG_Long, v.Int())
+		w(out, tagLong)
+		writeValue(out, tagString, name)
+		writeValue(out, tagLong, v.Int())
 
 	case reflect.Uint64:
-		w(out, TAG_Long)
-		writeValue(out, TAG_String, name)
-		writeValue(out, TAG_Long, v.Uint())
+		w(out, tagLong)
+		writeValue(out, tagString, name)
+		writeValue(out, tagLong, v.Uint())
 
 	case reflect.Float32:
-		w(out, TAG_Float)
-		writeValue(out, TAG_String, name)
-		writeValue(out, TAG_Float, float32(v.Float()))
+		w(out, tagFloat)
+		writeValue(out, tagString, name)
+		writeValue(out, tagFloat, float32(v.Float()))
 
 	case reflect.Float64:
-		w(out, TAG_Double)
-		writeValue(out, TAG_String, name)
-		writeValue(out, TAG_Double, v.Float())
+		w(out, tagDouble)
+		writeValue(out, tagString, name)
+		writeValue(out, tagDouble, v.Float())
 
 	case reflect.String:
-		w(out, TAG_String)
-		writeValue(out, TAG_String, name)
-		writeValue(out, TAG_String, v.String())
+		w(out, tagString)
+		writeValue(out, tagString, name)
+		writeValue(out, tagString, v.String())
 
 	case reflect.Array:
 		switch v.Type().Elem().Kind() {
 		case reflect.Uint8:
-			w(out, TAG_Byte_Array)
-			writeValue(out, TAG_String, name)
-			writeValue(out, TAG_Byte_Array, v.Slice(0, v.Len()).Bytes())
+			w(out, tagByteArray)
+			writeValue(out, tagString, name)
+			writeValue(out, tagByteArray, v.Slice(0, v.Len()).Bytes())
 
 		case reflect.Int32, reflect.Uint32:
-			w(out, TAG_Int_Array)
-			writeValue(out, TAG_String, name)
+			w(out, tagIntArray)
+			writeValue(out, tagString, name)
 			for i := 0; i < v.Len(); i++ {
-				writeValue(out, TAG_Int, v.Index(i).Interface())
+				writeValue(out, tagInt, v.Index(i).Interface())
 			}
 
 		case reflect.Int64, reflect.Uint64:
-			w(out, TAG_Long_Array)
-			writeValue(out, TAG_String, name)
+			w(out, tagLongArray)
+			writeValue(out, tagString, name)
 			for i := 0; i < v.Len(); i++ {
-				writeValue(out, TAG_Long, v.Index(i).Interface())
+				writeValue(out, tagLong, v.Index(i).Interface())
 			}
 
 		default:
@@ -156,18 +156,18 @@ func writeTag(out io.Writer, name string, v reflect.Value) {
 		}
 
 	case reflect.Slice:
-		w(out, TAG_List)
-		writeValue(out, TAG_String, name)
+		w(out, tagList)
+		writeValue(out, tagString, name)
 		writeList(out, v)
 
 	case reflect.Map:
-		w(out, TAG_Compound)
-		writeValue(out, TAG_String, name)
+		w(out, tagCompound)
+		writeValue(out, tagString, name)
 		writeMap(out, v)
 
 	case reflect.Struct:
-		w(out, TAG_Compound)
-		writeValue(out, TAG_String, name)
+		w(out, tagCompound)
+		writeValue(out, tagString, name)
 		writeCompound(out, v)
 
 	default:
@@ -177,17 +177,17 @@ func writeTag(out io.Writer, name string, v reflect.Value) {
 
 func writeValue(out io.Writer, tag Tag, v interface{}) {
 	switch tag {
-	case TAG_Byte, TAG_Short, TAG_Int, TAG_Long, TAG_Float, TAG_Double:
+	case tagByte, tagShort, tagInt, tagLong, tagFloat, tagDouble:
 		w(out, v)
 
-	case TAG_String:
+	case tagString:
 		w(out, uint16(len(v.(string))))
 		_, err := out.Write([]byte(v.(string)))
 		if err != nil {
 			panic(err)
 		}
 
-	case TAG_Byte_Array:
+	case tagByteArray:
 		w(out, uint32(len(v.([]byte))))
 		_, err := out.Write(v.([]byte))
 		if err != nil {
@@ -208,52 +208,52 @@ func writeList(out io.Writer, v reflect.Value) {
 		mustConvertBool = true
 		fallthrough
 	case reflect.Int8, reflect.Uint8:
-		tag = TAG_Byte
+		tag = tagByte
 
 	case reflect.Int16, reflect.Uint16:
-		tag = TAG_Short
+		tag = tagShort
 
 	case reflect.Int32, reflect.Uint32:
-		tag = TAG_Int
+		tag = tagInt
 
 	case reflect.Int64, reflect.Uint64:
-		tag = TAG_Long
+		tag = tagLong
 
 	case reflect.Float32:
-		tag = TAG_Float
+		tag = tagFloat
 
 	case reflect.Float64:
-		tag = TAG_Double
+		tag = tagDouble
 
 	case reflect.String:
-		tag = TAG_String
+		tag = tagString
 
 	case reflect.Array:
 		switch v.Type().Elem().Elem().Kind() {
 		case reflect.Uint8:
-			tag = TAG_Byte_Array
+			tag = tagByteArray
 
 		case reflect.Int32, reflect.Uint32:
-			tag = TAG_Int_Array
+			tag = tagIntArray
 
 		case reflect.Int64, reflect.Uint64:
-			tag = TAG_Long_Array
+			tag = tagLongArray
 
 		default:
 			panic(fmt.Errorf("nbt: Unhandled array type: %v", v.Type().Elem().Elem()))
 		}
 
 	case reflect.Slice:
-		tag = TAG_List
+		tag = tagList
 
 	case reflect.Map:
 		mustConvertMap = true
 		fallthrough
 	case reflect.Struct:
-		tag = TAG_Compound
+		tag = tagCompound
 
-	case reflect.Ptr: // TODO: Is there ever a case where TAG_Compound would be wrong here?
-		tag = TAG_Compound
+	case reflect.Ptr: // TODO: Is there ever a case where tagCompound would be wrong here?
+		tag = tagCompound
 
 	default:
 		panic(fmt.Errorf("nbt: Unhandled list element type: %v", v.Type().Elem()))
@@ -270,27 +270,27 @@ func writeList(out io.Writer, v reflect.Value) {
 	for i = 0; i < v.Len(); i++ {
 		if mustConvertBool {
 			if v.Index(i).Bool() {
-				writeValue(out, TAG_Byte, uint8(1))
+				writeValue(out, tagByte, uint8(1))
 			} else {
-				writeValue(out, TAG_Byte, uint8(0))
+				writeValue(out, tagByte, uint8(0))
 			}
-		} else if tag == TAG_Compound {
+		} else if tag == tagCompound {
 			if mustConvertMap {
 				writeMap(out, v.Index(i))
 			} else {
 				writeCompound(out, reflect.Indirect(v.Index(i)))
 			}
-		} else if tag == TAG_List {
+		} else if tag == tagList {
 			writeList(out, v.Index(i))
-		} else if tag == TAG_Byte_Array {
+		} else if tag == tagByteArray {
 			writeValue(out, tag, v.Index(i).Bytes())
-		} else if tag == TAG_Int_Array {
+		} else if tag == tagIntArray {
 			for j := 0; j < v.Index(i).Len(); j++ {
-				writeValue(out, TAG_Int, v.Index(i).Index(j).Interface())
+				writeValue(out, tagInt, v.Index(i).Index(j).Interface())
 			}
-		} else if tag == TAG_Long_Array {
+		} else if tag == tagLongArray {
 			for j := 0; j < v.Index(i).Len(); j++ {
-				writeValue(out, TAG_Long, v.Index(i).Index(j).Interface())
+				writeValue(out, tagLong, v.Index(i).Index(j).Interface())
 			}
 		} else {
 			writeValue(out, tag, v.Index(i).Interface())
@@ -302,7 +302,7 @@ func writeMap(out io.Writer, v reflect.Value) {
 	for _, name := range v.MapKeys() {
 		writeTag(out, name.String(), reflect.Indirect(v.MapIndex(name)))
 	}
-	w(out, TAG_End)
+	w(out, tagEnd)
 }
 
 func writeCompound(out io.Writer, v reflect.Value) {
@@ -312,5 +312,5 @@ func writeCompound(out io.Writer, v reflect.Value) {
 	for name, value := range fields {
 		writeTag(out, name, value)
 	}
-	w(out, TAG_End)
+	w(out, tagEnd)
 }
