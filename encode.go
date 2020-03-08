@@ -147,6 +147,7 @@ func writeTag(out io.Writer, name string, v reflect.Value) {
 		case reflect.Int64, reflect.Uint64:
 			w(out, tagLongArray)
 			writeValue(out, tagString, name)
+			w(out, uint32(v.Len()))
 			for i := 0; i < v.Len(); i++ {
 				writeValue(out, tagLong, v.Index(i).Interface())
 			}
