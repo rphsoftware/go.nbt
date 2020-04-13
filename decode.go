@@ -20,6 +20,7 @@ func Unmarshal(compression Compression, in io.Reader, v interface{}) (err error)
 		}
 	}()
 	new(decodeState).init(compression, in).unmarshal(v)
+	in.Close()
 	return
 }
 
